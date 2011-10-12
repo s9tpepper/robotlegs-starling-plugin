@@ -4,13 +4,13 @@ This plugin adds some classes to Robotlegs to support usage with the Starling fr
 
 Added Classes
 -------------
-StarlingMediatorMap.as
-StarlingViewMap.as
-StarlingViewMapBase.as
-IStarlingMediatorMap.as
-IStarlingViewMap.as
-StarlingContext.as
-StarlingMediator.as
+* StarlingMediatorMap.as
+* StarlingViewMap.as
+* StarlingViewMapBase.as
+* IStarlingMediatorMap.as
+* IStarlingViewMap.as
+* StarlingContext.as
+* StarlingMediator.as
 
 
 Usage Example
