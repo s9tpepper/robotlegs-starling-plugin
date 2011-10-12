@@ -18,6 +18,7 @@ Usage Example
 Below are some excerpts from a very simple usage example. The .fxp file for the example file is in the Downloads section. Below are the key parts.
 
 The main class set up remains the same:
+
 	package
 	{
 		import com.example.MyGame;
@@ -49,6 +50,7 @@ The main class set up remains the same:
 
 
 Inside the main Starling class (MyGame) sent into the first Starling constructor argument start a subclass of a StarlingContext instance. Usage of the StarlingContext is identical to the default Robotlegs Context class.
+
 	package com.example
 	{
 		import flash.utils.setTimeout;
@@ -83,6 +85,7 @@ Inside the main Starling class (MyGame) sent into the first Starling constructor
 	}
 
 Contents of the MyStarlingGameContext class (StarlingContext subclass):
+
 	package com.example
 	{
 		import org.robotlegs.mvcs.StarlingContext;
@@ -107,6 +110,7 @@ Contents of the MyStarlingGameContext class (StarlingContext subclass):
 	}
 
 And finally, the contents of one of the mediators (SecondViewMediator):
+
 	package com.example
 	{
 		import org.robotlegs.mvcs.StarlingMediator;
