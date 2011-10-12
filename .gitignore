@@ -1,0 +1,15 @@
+.actionScriptProperties
+.flexLibProperties
+.FlexUnitSettings
+.project
+.settings
+FlexUnitApplication.mxml
+src/com/*
+src/starling/*
+src/fr/*
+.DS_Store
+bin
+bin-debug
+bin-release
+src/media/textures/*
+
