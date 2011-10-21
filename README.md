@@ -11,6 +11,7 @@ Added Classes
 * IStarlingViewMap.as
 * StarlingContext.as
 * StarlingMediator.as
+* StarlingCommand.as
 
 
 Usage Example
@@ -103,8 +104,47 @@ Contents of the MyStarlingGameContext class (StarlingContext subclass):
 			{
 				mediatorMap.mapView(MyGame, MyGameMediator);
 				mediatorMap.mapView(SecondView, SecondViewMediator);
+				
+				commandMap.mapEvent(FlashEvent.EVENT_NAME, EventCommand);
 
 				super.startup();
+			}
+		}
+	}
+	
+Contents of the EventCommand (StarlingCommand sub-class, alternatively you can no subclass anything and declare a public execute() method, but do not use the default Robotlegs Command class, it will crash.)
+
+	package com.example
+	{
+		import org.robotlegs.mvcs.StarlingCommand;
+
+		public class EventCommand extends StarlingCommand
+		{
+			public function EventCommand()
+			{
+				super();
+			}
+
+			override public function execute():void
+			{
+				trace("EventCommand.execute()");
+			}
+		}
+	}
+	
+Alternate EventCommand class declaration (you dont get access to default things you might be used to with the default Robotlegs command class, like the injector, mediator map, etc):
+
+	package com.example
+	{
+		public class EventCommand
+		{
+			public function EventCommand()
+			{
+			}
+
+			public function execute():void
+			{
+				trace("EventCommand.execute()");
 			}
 		}
 	}
