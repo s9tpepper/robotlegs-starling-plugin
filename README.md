@@ -2,6 +2,8 @@
 
 This plugin adds some classes to Robotlegs to support usage with the Starling framework. Because the Starling framework uses Stage3D and not the flash.display.DisplayList a StarlingContext must be used along with a StarlingMediator. The rest of the framework usage remains the same.
 
+Pull Requests are encouraged! Please if you add/fix anything contribute it back! :)
+
 Added Classes
 -------------
 * StarlingMediatorMap.as
