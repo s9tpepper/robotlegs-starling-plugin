@@ -135,6 +135,7 @@ package org.robotlegs.core
 		 * @param value Whether the <code>IMediatorMap</code> should be enabled
 		 */
 		function set enabled(value:Boolean):void;
-
+		
+		function listen(dispatcher:DisplayObjectContainer):void;
 	}
 }
