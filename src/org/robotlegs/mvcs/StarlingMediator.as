@@ -75,7 +75,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get eventMap():IEventMap
 		{
-			return _eventMap || (_eventMap = new EventMap(eventDispatcher));
+			if (!_eventMap)
+				_eventMap = new EventMap(eventDispatcher);
+			return _eventMap;
 		}
 
 		/**
