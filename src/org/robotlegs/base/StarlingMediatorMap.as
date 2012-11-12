@@ -274,17 +274,69 @@ package org.robotlegs.base
 		/**
 		 * @private
 		 */
+		protected function addView(view:DisplayObject):void
+		{
+			if (mediatorsMarkedForRemoval[view])
+			{
+				delete mediatorsMarkedForRemoval[view];
+			}
+			else
+			{
+				var viewClassName:String = getQualifiedClassName(view);
+				var config:MappingConfig = mappingConfigByViewClassName[viewClassName];
+				if (config && config.autoCreate)
+					createMediatorUsing(view, viewClassName, config);
+			}
+
+			var viewContainer:DisplayObjectContainer = view as DisplayObjectContainer;
+			if (viewContainer)
+			{
+				var childCount:int = viewContainer.numChildren;
+				for (var i:int = 0; i < childCount; i++)
+				{
+					var child:DisplayObject = viewContainer.getChildAt(i);
+					addView(child);
+				}
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected function removeView(view:DisplayObject):void
+		{
+			var config:MappingConfig = mappingConfigByView[view];
+			if (config && config.autoRemove)
+			{
+				mediatorsMarkedForRemoval[view] = view;
+
+				if (!hasMediatorsMarkedForRemoval)
+				{
+					hasMediatorsMarkedForRemoval = true;
+
+					setTimeout(removeMediatorLater, 500, null);
+				}
+			}
+
+			var viewContainer:DisplayObjectContainer = view as DisplayObjectContainer;
+			if (viewContainer)
+			{
+				var childCount:int = viewContainer.numChildren;
+				for (var i:int = 0; i < childCount; i++)
+				{
+					var child:DisplayObject = viewContainer.getChildAt(i);
+					removeView(child);
+				}
+			}
+		}
+
+		/**
+		 * @private
+		 */
 		protected override function onViewAdded(e:Event):void
 		{
-			if (mediatorsMarkedForRemoval[e.target])
-			{
-				delete mediatorsMarkedForRemoval[e.target];
-				return;
-			}
-			var viewClassName:String = getQualifiedClassName(e.target);
-			var config:MappingConfig = mappingConfigByViewClassName[viewClassName];
-			if (config && config.autoCreate)
-				createMediatorUsing(e.target, viewClassName, config);
+			var view:DisplayObject = DisplayObject(e.target);
+			addView(view);
 		}
 
 		/**
@@ -319,18 +371,8 @@ package org.robotlegs.base
 		 */
 		protected function onViewRemoved(e:Event):void
 		{
-			var config:MappingConfig = mappingConfigByView[e.target];
-			if (config && config.autoRemove)
-			{
-				mediatorsMarkedForRemoval[e.target] = e.target;
-
-				if (!hasMediatorsMarkedForRemoval)
-				{
-					hasMediatorsMarkedForRemoval = true;
-
-					setTimeout(removeMediatorLater, 500, null);
-				}
-			}
+			var view:DisplayObject = DisplayObject(e.target);
+			removeView(view);
 		}
 
 		/**
