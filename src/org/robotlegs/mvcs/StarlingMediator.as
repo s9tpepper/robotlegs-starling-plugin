@@ -8,12 +8,16 @@
 package org.robotlegs.mvcs
 {
 	import starling.display.DisplayObjectContainer;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
+
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.utils.getDefinitionByName;
 
-	import org.robotlegs.base.EventMap;
 	import org.robotlegs.base.MediatorBase;
-	import org.robotlegs.core.IEventMap;
+	import org.robotlegs.base.StarlingEventMap;
+	import org.robotlegs.core.IStarlingEventMap;
 	import org.robotlegs.core.IStarlingMediatorMap;
 
 	/**
@@ -21,6 +25,16 @@ package org.robotlegs.mvcs
 	 */
 	public class StarlingMediator extends MediatorBase
 	{
+		/**
+		 * Feathers work-around part #1
+		 */
+		protected static var FeathersControlType:Class;
+		
+		/**
+		 * Feathers work-around part #2
+		 */
+		protected static const feathersAvailable:Boolean = checkFeathers();
+
 		[Inject]
 		public var contextView:DisplayObjectContainer;
 
@@ -35,10 +49,27 @@ package org.robotlegs.mvcs
 		/**
 		 * @private
 		 */
-		protected var _eventMap:IEventMap;
+		protected var _eventMap:IStarlingEventMap;
 
 		public function StarlingMediator()
 		{
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function preRegister():void
+		{
+			removed = false;
+			
+			if (feathersAvailable && (viewComponent is FeathersControlType) && !viewComponent['isInitialized'])
+			{
+				EventDispatcher(viewComponent).addEventListener('initialize', onInitialize);
+			}
+			else
+			{
+				onRegister();
+			}
 		}
 
 		/**
@@ -46,6 +77,11 @@ package org.robotlegs.mvcs
 		 */
 		override public function preRemove():void
 		{
+			if (feathersAvailable && (viewComponent is FeathersControlType))
+			{
+				EventDispatcher(viewComponent).removeEventListener('initialize', onInitialize);
+			}
+
 			if (_eventMap)
 				_eventMap.unmapListeners();
 			super.preRemove();
@@ -73,9 +109,9 @@ package org.robotlegs.mvcs
 		 *
 		 * @return The EventMap for this Actor
 		 */
-		protected function get eventMap():IEventMap
+		protected function get eventMap():IStarlingEventMap
 		{
-			return _eventMap || (_eventMap = new EventMap(eventDispatcher));
+			return _eventMap || (_eventMap = new StarlingEventMap(eventDispatcher));
 		}
 
 		/**
@@ -83,7 +119,7 @@ package org.robotlegs.mvcs
 		 *
 		 * @param event The Event to dispatch on the <code>IContext</code>'s <code>IEventDispatcher</code>
 		 */
-		protected function dispatch(event:Event):Boolean
+		protected function dispatch(event:flash.events.Event):Boolean
 		{
 			if (eventDispatcher.hasEventListener(event.type))
 				return eventDispatcher.dispatchEvent(event);
@@ -103,12 +139,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function addViewListener(type:String,
 										   listener:Function,
-										   eventClass:Class=null,
-										   useCapture:Boolean=false,
-										   priority:int=0,
-										   useWeakReference:Boolean=true):void
+										   eventClass:Class=null):void
 		{
-			eventMap.mapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture, priority, useWeakReference);
+			eventMap.mapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
 		}
 
 		/**
@@ -122,10 +155,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function removeViewListener(type:String,
 											  listener:Function,
-											  eventClass:Class=null,
-											  useCapture:Boolean=false):void
+											  eventClass:Class=null):void
 		{
-			eventMap.unmapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture);
+			eventMap.unmapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
 		}
 
 		/**
@@ -166,6 +198,39 @@ package org.robotlegs.mvcs
 												 useCapture:Boolean=false):void
 		{
 			eventMap.unmapListener(eventDispatcher, type, listener, eventClass, useCapture);
+		}
+
+		/**
+		 * Feathers work-around part #3
+		 *
+		 * <p>Checks for availability of Feathers by trying to get the class for IFeathersControl.</p>
+		 */
+		protected static function checkFeathers():Boolean
+		{
+			try
+			{
+				FeathersControlType = getDefinitionByName('feathers.core::IFeathersControl') as Class;
+			}
+			catch (error:Error)
+			{
+				// do nothing
+			}
+			return FeathersControlType != null;
+		}
+		
+		/**
+		 * Feathers work-around part #4
+		 *
+		 * <p><code>FeathersEventType.INITIALIZE</code> handler for this Mediator's View Component</p>
+		 *
+		 * @param e The event
+		 */
+		protected function onInitialize(e:starling.events.Event):void
+		{
+			e.target.removeEventListener('initialize', onInitialize);
+			
+			if (!removed)
+				onRegister();
 		}
 	}
 }

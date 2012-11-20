@@ -16,7 +16,7 @@ package org.robotlegs.mvcs
 	import org.robotlegs.base.ContextBase;
 	import org.robotlegs.base.ContextError;
 	import org.robotlegs.base.ContextEvent;
-	import org.robotlegs.base.EventMap;
+	import org.robotlegs.base.StarlingEventMap;
 	import org.robotlegs.base.StarlingMediatorMap;
 	import org.robotlegs.base.StarlingViewMap;
 	import org.robotlegs.core.ICommandMap;
@@ -24,6 +24,7 @@ package org.robotlegs.mvcs
 	import org.robotlegs.core.IEventMap;
 	import org.robotlegs.core.IInjector;
 	import org.robotlegs.core.IReflector;
+	import org.robotlegs.core.IStarlingEventMap;
 	import org.robotlegs.core.IStarlingMediatorMap;
 	import org.robotlegs.core.IStarlingViewMap;
 
@@ -104,6 +105,11 @@ package org.robotlegs.mvcs
 		 * @private
 		 */
 		protected var _viewMap:IStarlingViewMap;
+
+		/**
+		 * @private
+		 */
+		protected var _eventMap:IStarlingEventMap;
 
 		//---------------------------------------------------------------------
 		//  Constructor
@@ -240,7 +246,7 @@ package org.robotlegs.mvcs
 		}
 
 		/**
-		 * The <code>IMediatorMap</code> for this <code>IContext</code>
+		 * The <code>IStarlingMediatorMap</code> for this <code>IContext</code>
 		 */
 		protected function get mediatorMap():IStarlingMediatorMap
 		{
@@ -256,7 +262,7 @@ package org.robotlegs.mvcs
 		}
 
 		/**
-		 * The <code>IViewMap</code> for this <code>IContext</code>
+		 * The <code>IStarlingViewMap</code> for this <code>IContext</code>
 		 */
 		protected function get viewMap():IStarlingViewMap
 		{
@@ -269,6 +275,22 @@ package org.robotlegs.mvcs
 		protected function set viewMap(value:IStarlingViewMap):void
 		{
 			_viewMap = value;
+		}
+
+		/**
+		 * The <code>IStarlingEventMap</code> for this <code>IContext</code>
+		 */
+		protected function get eventMap():IStarlingEventMap
+		{
+			return _eventMap ||= new StarlingEventMap(eventDispatcher); 
+		}
+
+		/**
+		 * @private
+		 */
+		protected function set eventMap(value:IStarlingEventMap):void
+		{
+			_eventMap = value;
 		}
 
 		//---------------------------------------------------------------------
@@ -291,7 +313,8 @@ package org.robotlegs.mvcs
 			injector.mapValue(ICommandMap, commandMap);
 			injector.mapValue(IStarlingMediatorMap, mediatorMap);
 			injector.mapValue(IStarlingViewMap, viewMap);
-			injector.mapClass(IEventMap, EventMap);
+			injector.mapValue(IEventMap, eventMap);
+			injector.mapValue(IStarlingEventMap, eventMap);
 		}
 
 		//---------------------------------------------------------------------
