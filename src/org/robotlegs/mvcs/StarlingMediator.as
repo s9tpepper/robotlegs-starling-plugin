@@ -139,12 +139,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function addViewListener(type:String,
 										   listener:Function,
-										   eventClass:Class=null,
-										   useCapture:Boolean=false,
-										   priority:int=0,
-										   useWeakReference:Boolean=true):void
+										   eventClass:Class=null):void
 		{
-			eventMap.mapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture, priority, useWeakReference);
+			eventMap.mapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
 		}
 
 		/**
@@ -158,10 +155,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function removeViewListener(type:String,
 											  listener:Function,
-											  eventClass:Class=null,
-											  useCapture:Boolean=false):void
+											  eventClass:Class=null):void
 		{
-			eventMap.unmapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture);
+			eventMap.unmapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
 		}
 
 		/**
