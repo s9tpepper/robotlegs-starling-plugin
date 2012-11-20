@@ -15,9 +15,9 @@ package org.robotlegs.mvcs
 	import flash.events.IEventDispatcher;
 	import flash.utils.getDefinitionByName;
 
-	import org.robotlegs.base.EventMap;
 	import org.robotlegs.base.MediatorBase;
-	import org.robotlegs.core.IEventMap;
+	import org.robotlegs.base.StarlingEventMap;
+	import org.robotlegs.core.IStarlingEventMap;
 	import org.robotlegs.core.IStarlingMediatorMap;
 
 	/**
@@ -49,7 +49,7 @@ package org.robotlegs.mvcs
 		/**
 		 * @private
 		 */
-		protected var _eventMap:IEventMap;
+		protected var _eventMap:IStarlingEventMap;
 
 		public function StarlingMediator()
 		{
@@ -109,9 +109,9 @@ package org.robotlegs.mvcs
 		 *
 		 * @return The EventMap for this Actor
 		 */
-		protected function get eventMap():IEventMap
+		protected function get eventMap():IStarlingEventMap
 		{
-			return _eventMap || (_eventMap = new EventMap(eventDispatcher));
+			return _eventMap || (_eventMap = new StarlingEventMap(eventDispatcher));
 		}
 
 		/**
