@@ -6,21 +6,22 @@
  */
 package org.robotlegs.mvcs
 {
-	import flash.display.Stage;
-	import flash.events.Event;
+  import flash.display.Stage;
+  import flash.events.Event;
 
-	import mx.core.FlexGlobals;
+  import mx.core.FlexGlobals;
 
-	import org.flexunit.Assert;
-	import org.robotlegs.base.ContextEvent;
-	import org.robotlegs.mvcs.support.TestStarlingContext;
-	import org.robotlegs.mvcs.support.TestStarlingContextView;
+  import org.flexunit.Assert;
+  import org.fluint.uiImpersonation.UIImpersonator;
+  import org.robotlegs.base.ContextEvent;
+  import org.robotlegs.mvcs.support.TestStarlingContext;
+  import org.robotlegs.mvcs.support.TestStarlingContextView;
 
-	import starling.core.Starling;
-	import starling.display.DisplayObjectContainer;
-	import starling.display.Sprite;
+  import starling.core.Starling;
+  import starling.display.DisplayObjectContainer;
+  import starling.display.Sprite;
 
-	public class StarlingContextTests
+  public class StarlingContextTests
 	{
 		private var context:TestStarlingContext;
 		private var contextView:DisplayObjectContainer;
@@ -47,11 +48,15 @@ package org.robotlegs.mvcs
 		{
 			if (!starlingInstance)
 			{
-				starlingInstance = new Starling(TestStarlingContextView, FlexGlobals.topLevelApplication.stage as flash.display.Stage);
+        var stage:Stage = UIImpersonator.testDisplay.stage as Stage;
+        trace("stage = " + stage);
+				starlingInstance = new Starling(TestStarlingContextView, stage);
 				starlingInstance.start();
 			}
 			contextView = TestStarlingContextView.instance;
 			testMain = TestStarlingContextView.instance;
+
+
 		}
 
 		[After(ui)]
@@ -60,13 +65,24 @@ package org.robotlegs.mvcs
 			if (testMain && testMain.numChildren)
 				testMain.removeChildren();
 			testMain = null;
+
+      if (contextView && contextView.numChildren) {
+        contextView.removeChildren();
+      }
+      contextView = null;
+
+      if (starlingInstance) {
+        starlingInstance.dispose();
+      }
+
+      starlingInstance = null;
 		}
 
 		[Test]
 		public function autoStartupWithViewComponent():void
 		{
 			context = new TestStarlingContext(contextView, true);
-			Assert.assertTrue("Context should have started", context.startupComplete);
+			Assert.assertTrue("Context should have started, contextView.stage = " + contextView.stage, context.startupComplete);
 		}
 
 		[Test]
