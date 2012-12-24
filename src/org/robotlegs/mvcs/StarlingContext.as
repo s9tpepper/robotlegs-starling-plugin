@@ -202,7 +202,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get injector():IInjector
 		{
-			return _injector ||= createInjector();
+			if (! _injector)
+			   _injector = createInjector();
+			return _injector;
 		}
 
 		/**
@@ -218,7 +220,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get reflector():IReflector
 		{
-			return _reflector ||= new SwiftSuspendersReflector();
+			if (! _reflector)
+				_reflector = new SwiftSuspendersReflector();
+			return _reflector;
 		}
 
 		/**
@@ -234,7 +238,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get commandMap():ICommandMap
 		{
-			return _commandMap ||= new CommandMap(eventDispatcher, createChildInjector(), reflector);
+			if (! _commandMap)
+				_commandMap = new CommandMap(eventDispatcher, createChildInjector(), reflector);
+			return _commandMap;
 		}
 
 		/**
@@ -250,7 +256,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get mediatorMap():IStarlingMediatorMap
 		{
-			return _mediatorMap ||= new StarlingMediatorMap(contextView, createChildInjector(), reflector);
+			if (! _mediatorMap)
+				_mediatorMap = new StarlingMediatorMap(contextView, createChildInjector(), reflector);
+			return _mediatorMap;
 		}
 
 		/**
@@ -266,7 +274,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get viewMap():IStarlingViewMap
 		{
-			return _viewMap ||= new StarlingViewMap(contextView, injector);
+			if (! _viewMap)
+				_viewMap = new StarlingViewMap(contextView, injector);
+			return _viewMap;
 		}
 
 		/**

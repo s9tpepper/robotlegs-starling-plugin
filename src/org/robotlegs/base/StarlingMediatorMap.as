@@ -347,8 +347,10 @@ package org.robotlegs.base
 			var mediator:IMediator = mediatorByView[viewComponent];
 			if (mediator == null)
 			{
-				viewClassName ||= getQualifiedClassName(viewComponent);
-				config ||= mappingConfigByViewClassName[viewClassName];
+				if (!viewClassName)
+					viewClassName = getQualifiedClassName(viewComponent);
+				if (!config)
+					config = mappingConfigByViewClassName[viewClassName];
 				if (config)
 				{
 					for each (var claxx:Class in config.typedViewClasses)
