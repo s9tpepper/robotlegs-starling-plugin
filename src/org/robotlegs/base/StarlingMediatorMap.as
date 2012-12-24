@@ -10,12 +10,12 @@ package org.robotlegs.base
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.setTimeout;
-
+	
 	import org.robotlegs.core.IInjector;
 	import org.robotlegs.core.IMediator;
 	import org.robotlegs.core.IReflector;
 	import org.robotlegs.core.IStarlingMediatorMap;
-
+	
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite;
@@ -134,7 +134,7 @@ package org.robotlegs.base
 			{
 				viewListenerCount++;
 				if (viewListenerCount == 1)
-					addListeners();
+					addListeners(contextView);
 			}
 
 			// This was a bad idea - causes unexpected eager instantiation of object graph 
@@ -153,7 +153,7 @@ package org.robotlegs.base
 			{
 				viewListenerCount--;
 				if (viewListenerCount == 0)
-					removeListeners();
+					removeListeners(contextView);
 			}
 			delete mappingConfigByViewClassName[viewClassName];
 		}
@@ -246,28 +246,28 @@ package org.robotlegs.base
 		/**
 		 * @private
 		 */
-		protected override function addListeners():void
+		protected override function addListeners(dispatcher:DisplayObjectContainer):void
 		{
-			if (contextView && enabled)
+			if (dispatcher && enabled)
 			{
-				contextView.addEventListener(Event.ADDED, onViewAdded);
-				contextView.addEventListener(Event.REMOVED, onViewRemoved);
-				contextView.addEventListener(Event.ADDED_TO_STAGE, onViewAdded);
-				contextView.addEventListener(Event.REMOVED_FROM_STAGE, onViewRemoved);
+				dispatcher.addEventListener(Event.ADDED, onViewAdded);
+				dispatcher.addEventListener(Event.REMOVED, onViewRemoved);
+				dispatcher.addEventListener(Event.ADDED_TO_STAGE, onViewAdded);
+				dispatcher.addEventListener(Event.REMOVED_FROM_STAGE, onViewRemoved);
 			}
 		}
 
 		/**
 		 * @private
 		 */
-		protected override function removeListeners():void
+		protected override function removeListeners(dispatcher:DisplayObjectContainer):void
 		{
-			if (contextView)
+			if (dispatcher)
 			{
-				contextView.removeEventListener(Event.ADDED, onViewAdded);
-				contextView.removeEventListener(Event.REMOVED, onViewRemoved);
-				contextView.removeEventListener(Event.ADDED_TO_STAGE, onViewAdded);
-				contextView.removeEventListener(Event.REMOVED_FROM_STAGE, onViewRemoved);
+				dispatcher.removeEventListener(Event.ADDED, onViewAdded);
+				dispatcher.removeEventListener(Event.REMOVED, onViewRemoved);
+				dispatcher.removeEventListener(Event.ADDED_TO_STAGE, onViewAdded);
+				dispatcher.removeEventListener(Event.REMOVED_FROM_STAGE, onViewRemoved);
 			}
 		}
 
@@ -389,6 +389,11 @@ package org.robotlegs.base
 				delete mediatorsMarkedForRemoval[view];
 			}
 			hasMediatorsMarkedForRemoval = false;
+		}
+		
+		public function listen(dispatcher:DisplayObjectContainer):void
+		{
+			addListeners(dispatcher);
 		}
 	}
 }

@@ -71,7 +71,7 @@ package org.robotlegs.base
 				mappedPackages.push(packageName);
 				viewListenerCount++;
 				if (viewListenerCount == 1)
-					addListeners();
+					addListeners(_contextView);
 			}
 		}
 
@@ -86,7 +86,7 @@ package org.robotlegs.base
 				mappedPackages.splice(index, 1);
 				viewListenerCount--;
 				if (viewListenerCount == 0)
-					removeListeners();
+					removeListeners(_contextView);
 			}
 		}
 
@@ -102,7 +102,7 @@ package org.robotlegs.base
 
 			viewListenerCount++;
 			if (viewListenerCount == 1)
-				addListeners();
+				addListeners(_contextView);
 
 			// This was a bad idea - causes unexpected eager instantiation of object graph 
 			if (contextView && (contextView is type))
@@ -120,7 +120,7 @@ package org.robotlegs.base
 			{
 				viewListenerCount--;
 				if (viewListenerCount == 0)
-					removeListeners();
+					removeListeners(_contextView);
 			}
 		}
 
@@ -147,22 +147,22 @@ package org.robotlegs.base
 		/**
 		 * @private
 		 */
-		protected override function addListeners():void
+		protected override function addListeners(dispatcher:DisplayObjectContainer):void
 		{
-			if (contextView && enabled)
+			if (dispatcher && enabled)
 			{
-				contextView.addEventListener(Event.ADDED, onViewAdded);
+				dispatcher.addEventListener(Event.ADDED, onViewAdded);
 			}
 		}
 
 		/**
 		 * @private
 		 */
-		protected override function removeListeners():void
+		protected override function removeListeners(dispatcher:DisplayObjectContainer):void
 		{
-			if (contextView)
+			if (dispatcher)
 			{
-				contextView.removeEventListener(Event.ADDED, onViewAdded);
+				dispatcher.removeEventListener(Event.ADDED, onViewAdded);
 			}
 		}
 
