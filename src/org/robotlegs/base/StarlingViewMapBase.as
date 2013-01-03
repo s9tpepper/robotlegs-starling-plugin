@@ -81,10 +81,10 @@ package org.robotlegs.base
 		{
 			if (value != _contextView)
 			{
-				removeListeners();
+				removeListeners(_contextView);
 				_contextView = value;
 				if (viewListenerCount > 0)
-					addListeners();
+					addListeners(_contextView);
 			}
 		}
 
@@ -103,10 +103,10 @@ package org.robotlegs.base
 		{
 			if (value != _enabled)
 			{
-				removeListeners();
+				removeListeners(_contextView);
 				_enabled = value;
 				if (viewListenerCount > 0)
-					addListeners();
+					addListeners(_contextView);
 			}
 		}
 
@@ -117,14 +117,14 @@ package org.robotlegs.base
 		/**
 		 * @private
 		 */
-		protected function addListeners():void
+		protected function addListeners(dispatcher:DisplayObjectContainer):void
 		{
 		}
 
 		/**
 		 * @private
 		 */
-		protected function removeListeners():void
+		protected function removeListeners(dispatcher:DisplayObjectContainer):void
 		{
 		}
 

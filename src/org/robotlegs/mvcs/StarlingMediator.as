@@ -15,9 +15,9 @@ package org.robotlegs.mvcs
 	import flash.events.IEventDispatcher;
 	import flash.utils.getDefinitionByName;
 
-	import org.robotlegs.base.EventMap;
 	import org.robotlegs.base.MediatorBase;
-	import org.robotlegs.core.IEventMap;
+	import org.robotlegs.base.StarlingEventMap;
+	import org.robotlegs.core.IStarlingEventMap;
 	import org.robotlegs.core.IStarlingMediatorMap;
 
 	/**
@@ -49,7 +49,7 @@ package org.robotlegs.mvcs
 		/**
 		 * @private
 		 */
-		protected var _eventMap:IEventMap;
+		protected var _eventMap:IStarlingEventMap;
 
 		public function StarlingMediator()
 		{
@@ -109,11 +109,9 @@ package org.robotlegs.mvcs
 		 *
 		 * @return The EventMap for this Actor
 		 */
-		protected function get eventMap():IEventMap
+		protected function get eventMap():IStarlingEventMap
 		{
-			if (!_eventMap)
-				_eventMap = new EventMap(eventDispatcher);
-			return _eventMap;
+			return _eventMap || (_eventMap = new StarlingEventMap(eventDispatcher));
 		}
 
 		/**
@@ -141,12 +139,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function addViewListener(type:String,
 										   listener:Function,
-										   eventClass:Class=null,
-										   useCapture:Boolean=false,
-										   priority:int=0,
-										   useWeakReference:Boolean=true):void
+										   eventClass:Class=null):void
 		{
-			eventMap.mapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture, priority, useWeakReference);
+			eventMap.mapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
 		}
 
 		/**
@@ -160,10 +155,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function removeViewListener(type:String,
 											  listener:Function,
-											  eventClass:Class=null,
-											  useCapture:Boolean=false):void
+											  eventClass:Class=null):void
 		{
-			eventMap.unmapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture);
+			eventMap.unmapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
 		}
 
 		/**
