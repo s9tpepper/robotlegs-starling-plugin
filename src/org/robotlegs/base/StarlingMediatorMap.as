@@ -276,17 +276,7 @@ package org.robotlegs.base
 		 */
 		protected function addView(view:DisplayObject):void
 		{
-			if (mediatorsMarkedForRemoval[view])
-			{
-				delete mediatorsMarkedForRemoval[view];
-			}
-			else
-			{
-				var viewClassName:String = getQualifiedClassName(view);
-				var config:MappingConfig = mappingConfigByViewClassName[viewClassName];
-				if (config && config.autoCreate)
-					createMediatorUsing(view, viewClassName, config);
-			}
+			addViewComponent(view);
 
 			var viewContainer:DisplayObjectContainer = view as DisplayObjectContainer;
 			if (viewContainer)
@@ -303,20 +293,27 @@ package org.robotlegs.base
 		/**
 		 * @private
 		 */
+		protected function addViewComponent(viewComponent:Object):void
+		{
+			if (mediatorsMarkedForRemoval[viewComponent])
+			{
+				delete mediatorsMarkedForRemoval[viewComponent];
+			}
+			else
+			{
+				var viewClassName:String = getQualifiedClassName(viewComponent);
+				var config:MappingConfig = mappingConfigByViewClassName[viewClassName];
+				if (config && config.autoCreate)
+					createMediatorUsing(viewComponent, viewClassName, config);
+			}
+		}
+
+		/**
+		 * @private
+		 */
 		protected function removeView(view:DisplayObject):void
 		{
-			var config:MappingConfig = mappingConfigByView[view];
-			if (config && config.autoRemove)
-			{
-				mediatorsMarkedForRemoval[view] = view;
-
-				if (!hasMediatorsMarkedForRemoval)
-				{
-					hasMediatorsMarkedForRemoval = true;
-
-					setTimeout(removeMediatorLater, 500, null);
-				}
-			}
+			removeViewComponent(view);
 
 			var viewContainer:DisplayObjectContainer = view as DisplayObjectContainer;
 			if (viewContainer)
@@ -326,6 +323,25 @@ package org.robotlegs.base
 				{
 					var child:DisplayObject = viewContainer.getChildAt(i);
 					removeView(child);
+				}
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected function removeViewComponent(viewComponent:Object):void
+		{
+			var config:MappingConfig = mappingConfigByView[viewComponent];
+			if (config && config.autoRemove)
+			{
+				mediatorsMarkedForRemoval[viewComponent] = viewComponent;
+
+				if (!hasMediatorsMarkedForRemoval)
+				{
+					hasMediatorsMarkedForRemoval = true;
+
+					setTimeout(removeMediatorLater, 500, null);
 				}
 			}
 		}
