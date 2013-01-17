@@ -16,7 +16,7 @@ package org.robotlegs.mvcs
 	import org.robotlegs.base.ContextBase;
 	import org.robotlegs.base.ContextError;
 	import org.robotlegs.base.ContextEvent;
-	import org.robotlegs.base.EventMap;
+	import org.robotlegs.base.StarlingEventMap;
 	import org.robotlegs.base.StarlingMediatorMap;
 	import org.robotlegs.base.StarlingViewMap;
 	import org.robotlegs.core.ICommandMap;
@@ -24,6 +24,7 @@ package org.robotlegs.mvcs
 	import org.robotlegs.core.IEventMap;
 	import org.robotlegs.core.IInjector;
 	import org.robotlegs.core.IReflector;
+	import org.robotlegs.core.IStarlingEventMap;
 	import org.robotlegs.core.IStarlingMediatorMap;
 	import org.robotlegs.core.IStarlingViewMap;
 
@@ -104,6 +105,11 @@ package org.robotlegs.mvcs
 		 * @private
 		 */
 		protected var _viewMap:IStarlingViewMap;
+
+		/**
+		 * @private
+		 */
+		protected var _eventMap:IStarlingEventMap;
 
 		//---------------------------------------------------------------------
 		//  Constructor
@@ -196,7 +202,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get injector():IInjector
 		{
-			return _injector ||= createInjector();
+			if (! _injector)
+			   _injector = createInjector();
+			return _injector;
 		}
 
 		/**
@@ -212,7 +220,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get reflector():IReflector
 		{
-			return _reflector ||= new SwiftSuspendersReflector();
+			if (! _reflector)
+				_reflector = new SwiftSuspendersReflector();
+			return _reflector;
 		}
 
 		/**
@@ -228,7 +238,9 @@ package org.robotlegs.mvcs
 		 */
 		protected function get commandMap():ICommandMap
 		{
-			return _commandMap ||= new CommandMap(eventDispatcher, createChildInjector(), reflector);
+			if (! _commandMap)
+				_commandMap = new CommandMap(eventDispatcher, createChildInjector(), reflector);
+			return _commandMap;
 		}
 
 		/**
@@ -240,11 +252,13 @@ package org.robotlegs.mvcs
 		}
 
 		/**
-		 * The <code>IMediatorMap</code> for this <code>IContext</code>
+		 * The <code>IStarlingMediatorMap</code> for this <code>IContext</code>
 		 */
 		protected function get mediatorMap():IStarlingMediatorMap
 		{
-			return _mediatorMap ||= new StarlingMediatorMap(contextView, createChildInjector(), reflector);
+			if (! _mediatorMap)
+				_mediatorMap = new StarlingMediatorMap(contextView, createChildInjector(), reflector);
+			return _mediatorMap;
 		}
 
 		/**
@@ -256,11 +270,13 @@ package org.robotlegs.mvcs
 		}
 
 		/**
-		 * The <code>IViewMap</code> for this <code>IContext</code>
+		 * The <code>IStarlingViewMap</code> for this <code>IContext</code>
 		 */
 		protected function get viewMap():IStarlingViewMap
 		{
-			return _viewMap ||= new StarlingViewMap(contextView, injector);
+			if (! _viewMap)
+				_viewMap = new StarlingViewMap(contextView, injector);
+			return _viewMap;
 		}
 
 		/**
@@ -269,6 +285,22 @@ package org.robotlegs.mvcs
 		protected function set viewMap(value:IStarlingViewMap):void
 		{
 			_viewMap = value;
+		}
+
+		/**
+		 * The <code>IStarlingEventMap</code> for this <code>IContext</code>
+		 */
+		protected function get eventMap():IStarlingEventMap
+		{
+			return _eventMap ||= new StarlingEventMap(eventDispatcher); 
+		}
+
+		/**
+		 * @private
+		 */
+		protected function set eventMap(value:IStarlingEventMap):void
+		{
+			_eventMap = value;
 		}
 
 		//---------------------------------------------------------------------
@@ -291,7 +323,8 @@ package org.robotlegs.mvcs
 			injector.mapValue(ICommandMap, commandMap);
 			injector.mapValue(IStarlingMediatorMap, mediatorMap);
 			injector.mapValue(IStarlingViewMap, viewMap);
-			injector.mapClass(IEventMap, EventMap);
+			injector.mapValue(IEventMap, eventMap);
+			injector.mapValue(IStarlingEventMap, eventMap);
 		}
 
 		//---------------------------------------------------------------------

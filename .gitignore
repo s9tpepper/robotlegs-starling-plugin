@@ -12,4 +12,8 @@ bin
 bin-debug
 bin-release
 src/media/textures/*
+out
+.idea
+*.iml
+
 
