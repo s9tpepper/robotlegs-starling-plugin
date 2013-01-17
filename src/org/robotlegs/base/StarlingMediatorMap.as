@@ -276,20 +276,15 @@ package org.robotlegs.base
 		 */
 		protected override function onViewAdded(e:Event):void
 		{
-			addViewComponent(e.target);
-		}
-
-		protected function addViewComponent(viewComponent:Object):void
-		{
-			if (mediatorsMarkedForRemoval[viewComponent])
+			if (mediatorsMarkedForRemoval[e.target])
 			{
-				delete mediatorsMarkedForRemoval[viewComponent];
+				delete mediatorsMarkedForRemoval[e.target];
 				return;
 			}
-			var viewClassName:String = getQualifiedClassName(viewComponent);
+			var viewClassName:String = getQualifiedClassName(e.target);
 			var config:MappingConfig = mappingConfigByViewClassName[viewClassName];
 			if (config && config.autoCreate)
-				createMediatorUsing(viewComponent, viewClassName, config);
+				createMediatorUsing(e.target, viewClassName, config);
 		}
 
 		/**
@@ -324,15 +319,10 @@ package org.robotlegs.base
 		 */
 		protected function onViewRemoved(e:Event):void
 		{
-			removeViewComponent(e.target);
-		}
-
-		protected function removeViewComponent(viewComponent:Object):void
-		{
-			var config:MappingConfig = mappingConfigByView[viewComponent];
+			var config:MappingConfig = mappingConfigByView[e.target];
 			if (config && config.autoRemove)
 			{
-				mediatorsMarkedForRemoval[viewComponent] = viewComponent;
+				mediatorsMarkedForRemoval[e.target] = e.target;
 
 				if (!hasMediatorsMarkedForRemoval)
 				{

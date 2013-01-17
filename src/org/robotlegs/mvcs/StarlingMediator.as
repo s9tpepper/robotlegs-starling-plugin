@@ -7,12 +7,6 @@
 
 package org.robotlegs.mvcs
 {
-	import starling.events.EventDispatcher;
-
-	import org.robotlegs.base.StarlingEventMap;
-
-	import org.robotlegs.core.IStarlingEventMap;
-
 	import starling.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -41,7 +35,7 @@ package org.robotlegs.mvcs
 		/**
 		 * @private
 		 */
-		protected var _eventMap:IStarlingEventMap;
+		protected var _eventMap:IEventMap;
 
 		public function StarlingMediator()
 		{
@@ -79,9 +73,9 @@ package org.robotlegs.mvcs
 		 *
 		 * @return The EventMap for this Actor
 		 */
-		protected function get eventMap():IStarlingEventMap
+		protected function get eventMap():IEventMap
 		{
-			return _eventMap || (_eventMap = new StarlingEventMap(eventDispatcher));
+			return _eventMap || (_eventMap = new EventMap(eventDispatcher));
 		}
 
 		/**
@@ -114,14 +108,7 @@ package org.robotlegs.mvcs
 										   priority:int=0,
 										   useWeakReference:Boolean=true):void
 		{
-			if (viewComponent is EventDispatcher)
-			{
-				eventMap.mapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
-			}
-			else
-			{
-				eventMap.mapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture, priority, useWeakReference);
-			}
+			eventMap.mapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture, priority, useWeakReference);
 		}
 
 		/**
@@ -138,14 +125,7 @@ package org.robotlegs.mvcs
 											  eventClass:Class=null,
 											  useCapture:Boolean=false):void
 		{
-			if (viewComponent is EventDispatcher)
-			{
-				eventMap.unmapStarlingListener(EventDispatcher(viewComponent), type, listener, eventClass);
-			}
-			else
-			{
-				eventMap.unmapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture);
-			}
+			eventMap.unmapListener(IEventDispatcher(viewComponent), type, listener, eventClass, useCapture);
 		}
 
 		/**
