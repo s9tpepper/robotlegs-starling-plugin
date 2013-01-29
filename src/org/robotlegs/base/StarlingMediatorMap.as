@@ -171,7 +171,9 @@ package org.robotlegs.base
 		 */
 		public function registerMediator(viewComponent:Object, mediator:IMediator):void
 		{
-			injector.mapValue(reflector.getClass(mediator), mediator);
+			var mediatorClass:Class = reflector.getClass(mediator);
+			injector.hasMapping(mediatorClass) && injector.unmap(mediatorClass);
+			injector.mapValue(mediatorClass, mediator);
 			mediatorByView[viewComponent] = mediator;
 			mappingConfigByView[viewComponent] = mappingConfigByViewClassName[getQualifiedClassName(viewComponent)];
 			mediator.setViewComponent(viewComponent);
@@ -186,11 +188,12 @@ package org.robotlegs.base
 			if (mediator)
 			{
 				var viewComponent:Object = mediator.getViewComponent();
+				var mediatorClass:Class = reflector.getClass(mediator);
 				delete mediatorByView[viewComponent];
 				delete mappingConfigByView[viewComponent];
 				mediator.preRemove();
 				mediator.setViewComponent(null);
-				injector.unmap(reflector.getClass(mediator));
+				injector.hasMapping(mediatorClass) && injector.unmap(mediatorClass);
 			}
 			return mediator;
 		}
