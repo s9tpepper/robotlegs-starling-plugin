@@ -292,7 +292,10 @@ package org.robotlegs.mvcs
 		 */
 		protected function get eventMap():IStarlingEventMap
 		{
-			return _eventMap ||= new StarlingEventMap(eventDispatcher); 
+			if (!_eventMap) {
+				_eventMap = new StarlingEventMap(eventDispatcher); 
+			}
+			return _eventMap;
 		}
 
 		/**
